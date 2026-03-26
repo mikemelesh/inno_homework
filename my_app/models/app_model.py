@@ -31,4 +31,26 @@ class AppModel(models.Model):
     boolean8 = fields.Boolean(string='8')
     boolean9 = fields.Boolean(string='9')
 
+    char = fields.Char(string='Char field', size=100)
+    integer = fields.Integer(string='Integer number')
+    float_num = fields.Float(string='Float number', digits=(16, 2))
+    monetary = fields.Monetary(string='Monetary field', currency_field='currency_id')
+    currency_id = fields.Many2one('res.currency', string='Currency')
 
+    date = fields.Date(string='Date')
+    datetime = fields.Datetime(string='Date and time', default=fields.Datetime.now)
+
+    html = fields.Html(string='HTML')
+    binary = fields.Binary(string='File')
+    image = fields.Image(string='Image', max_width=720, max_height=720)
+    active = fields.Boolean(string='Active', default=True)
+
+    user_id = fields.Many2one('res.users', string='User')
+
+    partner_ids = fields.Many2many('res.partner', string='Partners')
+    computed_field = fields.Char(string='Computed Title', compute='_compute_title')
+
+    @api.depends('text')
+    def _compute_title(self):
+        for record in self:
+            record.computed_field = f"Title: {record.text or 'Empty'}"
