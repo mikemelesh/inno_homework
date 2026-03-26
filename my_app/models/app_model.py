@@ -1,4 +1,4 @@
-from odoo18.odoo import models, fields, api
+from odoo import models, fields, api
 
 class AppModel(models.Model):
     _name = "app.model"
@@ -30,3 +30,5 @@ class AppModel(models.Model):
     boolean7 = fields.Boolean(string='7')
     boolean8 = fields.Boolean(string='8')
     boolean9 = fields.Boolean(string='9')
+
+
