@@ -49,8 +49,73 @@ class AppModel(models.Model):
 
     partner_ids = fields.Many2many('res.partner', string='Partners')
     computed_field = fields.Char(string='Computed Title', compute='_compute_title')
-
+    is_company = fields.Boolean(string='Is Company')
     @api.depends('text')
     def _compute_title(self):
         for record in self:
             record.computed_field = f"Title: {record.text or 'Empty'}"
+
+    @api.onchange('check_all')
+    def _onchange_check_all(self):
+        """select all sets check1 and check2"""
+
+        if self.check_all:
+            self.check1 = True
+            self.check2 = True
+        else:
+            if self.check1 and self.check2:
+                self.check1 = False
+                self.check2 = False
+
+    @api.onchange('check1', 'check2')
+    def _onchange_checks(self):
+        """'select all' sets on check1 and check2 changes
+            text displays current active checks
+        """
+        if self.check1 and self.check2:
+            self.check_all = True
+        else:
+            self.check_all = False
+        current_text = self.text or ""
+        label1 = "[Test 1]"
+        label2 = "{Test 2}"
+
+        if self.check1:
+            if label1 not in current_text:
+                current_text = f"{current_text} {label1}".strip()
+        else:
+            current_text = current_text.replace(label1, "").replace("  ", " ").strip()
+
+        if self.check2:
+            if label2 not in current_text:
+                current_text = f"{current_text} {label2}".strip()
+        else:
+            current_text = current_text.replace(label2, "").replace("  ", " ").strip()
+
+        self.text = current_text
+
+
+    def action_create_partner(self):
+        """Header buttons logic"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create Contact',
+            'res_model': 'res.partner',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_name': self.text,
+                'default_is_company': self.is_company,
+            }
+        }
+
+    def action_open_wizard(self):
+        """Open partner wizard window"""
+        return {
+            'name': 'Create Partner Wizard',
+            'type': 'ir.actions.act_window',
+            'res_model': 'create.partner.wizard',
+            'view_mode': 'form',
+            'target': 'new',  # Открывает как модальное окно
+        }
