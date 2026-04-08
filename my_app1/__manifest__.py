@@ -5,7 +5,7 @@
     'summary': 'tasks',
     'depends': ['base'],
     'data': [
-    'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/app_model_views.xml',
     ],
     'installable': True,

@@ -5,38 +5,80 @@
         <field name="model">app.model</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_create_partner" string="Create Company"
+                            type="object" invisible="not is_company"/>
+                    <button name="action_create_partner" string="Create Person"
+                            type="object" invisible="is_company"/>
+
+                    <button name="action_open_wizard" string="CREATE PARTNER"
+                            type="object" class="oe_highlight"/>
+                </header>
                 <sheet>
-                    <group>
-                        <field name="text"/>
-                        <field name="check_all"/>
-                    </group>
-                    <group>
-                        <group string="Checks">
+                    <div class="oe_title" invisible="not id">
+                        <h1><field name="computed_field"/></h1>
+                    </div>
+
+                    <group name="always_visible">
+                        <group>
+                            <field name="text" placeholder="Введите текст..."/>
+                            <field name="is_company"/>
+                        </group>
+                        <group>
+                            <field name="check_all"/>
                             <field name="check1"/>
                             <field name="check2"/>
                         </group>
+                    </group>
+
+                    <group name="hidden_until_save" invisible="not id">
                         <group string="Selectors">
                             <field name="select1"/>
                             <field name="select2"/>
                         </group>
-                    </group>
-                    <group string="Booleans Grid">
-                        <group>
-                            <field name="boolean1"/>
-                            <field name="boolean2"/>
-                            <field name="boolean3"/>
-                        </group>
-                        <group>
-                            <field name="boolean4"/>
-                            <field name="boolean5"/>
-                            <field name="boolean6"/>
-                        </group>
-                        <group>
-                            <field name="boolean7"/>
-                            <field name="boolean8"/>
-                            <field name="boolean9"/>
+                        <group string="Numbers &amp; Dates">
+                            <field name="integer"/>
+                            <field name="float_num"/>
+                            <field name="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="date"/>
+                            <field name="datetime"/>
                         </group>
                     </group>
+
+                    <group string="Booleans Grid" invisible="not id">
+                        <group>
+                            <field name="boolean1" invisible="select1 != '1' and select2 != '4'"/>
+                            <field name="boolean2" invisible="select1 != '1' and select2 != '5'"/>
+                            <field name="boolean3" invisible="select1 != '1' and select2 != '6'"/>
+                        </group>
+                        <group>
+                            <field name="boolean4" invisible="select1 != '2' and select2 != '4'"/>
+                            <field name="boolean5" invisible="select1 != '2' and select2 != '5'"/>
+                            <field name="boolean6" invisible="select1 != '2' and select2 != '6'"/>
+                        </group>
+                        <group>
+                            <field name="boolean7" invisible="select1 != '3' and select2 != '4'"/>
+                            <field name="boolean8" invisible="select1 != '3' and select2 != '5'"/>
+                            <field name="boolean9" invisible="select1 != '3' and select2 != '6'"/>
+                        </group>
+                    </group>
+
+                    <notebook invisible="not id">
+                        <page string="Media" name="media">
+                            <group>
+                                <field name="image" widget="image"/>
+                                <field name="binary"/>
+                                <field name="html"/>
+                            </group>
+                        </page>
+                        <page string="Relations" name="relations">
+                            <group>
+                                <field name="user_id" widget="many2one_avatar_user"/>
+                                <field name="partner_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -48,6 +90,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="text"/>
+                <field name="is_company"/>
                 <field name="select1"/>
                 <field name="select2"/>
             </list>
@@ -55,7 +98,7 @@
     </record>
 
     <record id="action_app_model" model="ir.actions.act_window">
-        <field name="name">App Tasks</field>
+        <field name="name">Inno App Tasks</field>
         <field name="res_model">app.model</field>
         <field name="view_mode">list,form</field>
     </record>
